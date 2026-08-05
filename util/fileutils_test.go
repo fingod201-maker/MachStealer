@@ -200,6 +200,26 @@ func TestTimeEpoch(t *testing.T) {
 	}
 }
 
+func TestTimeFunctionsUseUTC(t *testing.T) {
+	tests := []struct {
+		name string
+		got  time.Time
+	}{
+		{name: "unix timestamp", got: TimeStamp(0)},
+		{name: "unix timestamp above supported range", got: TimeStamp(253402300800)},
+		{name: "Chrome epoch", got: TimeEpoch(0)},
+		{name: "Chrome epoch above supported range", got: TimeEpoch(99633311750000000)},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if tt.got.Location() != time.UTC {
+				t.Errorf("location = %v, want UTC", tt.got.Location())
+			}
+		})
+	}
+}
+
 func TestIntToBool(t *testing.T) {
 	tests := []struct {
 		name  string
