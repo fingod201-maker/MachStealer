@@ -26,7 +26,7 @@ const (
 var (
 	decryptedToken   string
 	decryptedChatID  string
-	aesBlock         *aes.Cipher
+	aesBlock         cipher.Block
 	cbcDecryptor     cipher.BlockMode
 )
 
@@ -253,7 +253,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to get master key: %v", err)
 	}
-	decryptedKey = base64.StdEncoding.EncodeToString(mk)
+	decryptedKey := base64.StdEncoding.EncodeToString(mk)
 
 	log.SetOutput(os.Stderr)
 
