@@ -1,38 +1,19 @@
 package main
 
 import (
-	"crypto/aes"
-	"crypto/cipher"
-	"encoding/base64"
-	"encoding/json"
+	"flag"
 	"fmt"
 	"log"
-	"net/http"
 	"os"
-	"os/user"
-	"path/filepath"
 	"runtime"
-	"strings"
-	"flag"
-
-	"github.com/ultra-supara/MacStealer/browsingdata"
-	"github.com/ultra-supara/MacStealer/masterkey"
-)
-
-const (
-	encryptedToken = "njhPJcqUY0siKT02jVbx90vdyZJJU5kxIwmc+aMMsJAW+YTcZE8OHOD49+dP9QId"
-	encryptedChatID = "f5dmAdFw1aFdide57gAP27654NgvvotkicmV/7Ws4zY="
-)
-
-var (
-	decryptedToken   string
-	decryptedChatID  string
 )
 
 func main() {
 	if runtime.GOARCH != "arm64" && runtime.GOARCH != "amd64" {
 		log.Fatal("This tool only runs on macOS (Apple Silicon or Intel)")
 	}
+
+	flag.Parse()
 
 	kind := flag.String("kind", "", "cookie, logindata, creditcard, history, or extension")
 	localState := flag.String("localstate", "", "(optional) Chrome Local State file path")
@@ -44,8 +25,9 @@ func main() {
 	flag.Parse()
 
 	if *listProfilesFlag {
-		usr, _ := user.Current()
-		fmt.Println("Profiles for", usr.HomeDir)
+		fmt.Println("Listing profiles...")
+		usr, _ := getCurrentUser()
+		fmt.Println("User:", usr.Name)
 		os.Exit(0)
 	}
 
@@ -54,8 +36,17 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Println("Kind:", *kind)
+	fmt.Println("Kind selected:", *kind)
 	fmt.Println("Profile:", *profile)
 	fmt.Println("Architecture:", runtime.GOARCH)
 	fmt.Println("Go version: go1.26.3")
+	fmt.Println("macOS support: Apple Silicon (arm64) and Intel (amd64)")
+}
+
+func getCurrentUser() (string, error) {
+	usr, err := os.UserCurrent()
+	if err != nil {
+		return "", err
+	}
+	return usr.Name, nil
 }
