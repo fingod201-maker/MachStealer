@@ -16,18 +16,13 @@ func main() {
 	flag.Parse()
 
 	kind := flag.String("kind", "", "cookie, logindata, creditcard, history, or extension")
-	localState := flag.String("localstate", "", "(optional) Chrome Local State file path")
-	sessionstorage := flag.String("sessionstorage", "", "(optional) Chrome Session Storage")
-	targetPath := flag.String("targetpath", "", "(optional) File path")
 	profile := flag.String("profile", "Default", "(optional) Chrome profile name")
 	listProfilesFlag := flag.Bool("list-profiles", false, "List available profiles")
 
 	flag.Parse()
 
 	if *listProfilesFlag {
-		fmt.Println("Listing profiles...")
-		usr, _ := getCurrentUser()
-		fmt.Println("User:", usr.Name)
+		fmt.Println("Profiles mode - simple check")
 		os.Exit(0)
 	}
 
@@ -36,17 +31,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Println("Kind selected:", *kind)
+	fmt.Println("Kind:", *kind)
 	fmt.Println("Profile:", *profile)
 	fmt.Println("Architecture:", runtime.GOARCH)
-	fmt.Println("Go version: go1.26.3")
-	fmt.Println("macOS support: Apple Silicon (arm64) and Intel (amd64)")
-}
-
-func getCurrentUser() (string, error) {
-	usr, err := os.UserCurrent()
-	if err != nil {
-		return "", err
-	}
-	return usr.Name, nil
+	fmt.Println("Go version: go1.26.3 - macOS arm64/amd64 supported")
 }
